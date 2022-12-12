@@ -7,8 +7,14 @@ session_start()
 <?php
 if (isset($_POST['submit_find'])) {
     $id = $_POST['id'];
-    $conn->query("INSERT INTO find_book (book_id) 
-                VALUES('$id')") or die($conn->error);
+    $find="SELECT * FROM data WHERE id='$id'";
+    $prompt = mysqli_query($conn, $find);
+    $getData = mysqli_fetch_array($prompt);
+    $cnt = mysqli_num_rows($prompt);
+    $category = $getData['Category'];
+    $title = $getData['Title'];
+    $conn->query("INSERT INTO find_book (category,title) 
+        VALUES('$category','$title')") or die($conn->error);
 
 ?>
     <script>
@@ -38,8 +44,11 @@ if (isset($_POST['barcode_submit'])) {
         $conn->query("INSERT INTO logbook (title,author,classification_code,barcode,year) 
                 VALUES('$title','$author','$classification_code','$barcode','$year')") or die($conn->error);
         
-        $conn->query("INSERT INTO find_book (book_id,title) 
+        $conn->query("INSERT INTO find_book (category,title) 
         VALUES('$category','$title')") or die($conn->error);
+
+        $conn->query("INSERT INTO bcode_find (book_title) 
+        VALUES('$title')") or die($conn->error);
         
 ?>
 <script>
